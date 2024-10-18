@@ -1,15 +1,32 @@
-  version: '3'
-
-  services:
-    db:
-      image: postgres:16
-      restart: always
-      ports:
-        - "5432:5432"
-      environment:
-        POSTGRES_USER: ${DB_USER}
-        POSTGRES_PASSWORD: ${DB_PASS}
-        POSTGRES_DB: ${DB_NAME}
-      container_name: fasterywallet_db
-      volumes:
-        - ./postgres:/var/lib/postgresql/data
+services:
+  db:
+    container_name: fastery_wallet_db 
+    image: postgres:16
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  backend:
+    container_name: wallet_api
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - .:/app
+      - /app/node_modules  # Evitar sobrescribir node_modules en el host
+    ports:
+      - "4000:4000"  # Asegúrate de que el puerto coincide con el que usas en la API (5000)
+    depends_on:
+      - db
+    env_file: .env
+    networks:
+      - kioskoplus-network
+networks:
+  kioskoplus-network:
+    driver: bridge
