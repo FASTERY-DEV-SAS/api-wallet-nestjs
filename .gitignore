@@ -1,3 +1,5 @@
+Dockerfile
+docker-compose.yml
 # compiled output
 /dist
 /node_modules
