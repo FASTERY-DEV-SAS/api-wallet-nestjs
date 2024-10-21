@@ -1,3 +1,4 @@
+.dockerignore
 connection.dio
 Dockerfile
 docker-compose.yml
