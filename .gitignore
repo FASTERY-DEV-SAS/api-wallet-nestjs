@@ -2,6 +2,7 @@
 connection.dio
 Dockerfile
 docker-compose.yml
+package-lock.json
 # compiled output
 /dist
 /node_modules
