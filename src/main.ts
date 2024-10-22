@@ -29,7 +29,7 @@ async function bootstrap() {
   SwaggerModule.setup(uuid, app, document);
 
   const port = process.env.PORT || 8080;
-  await app.listen(port,"localhost");
+  await app.listen(port,'0.0.0.0');
   logger.log(`Aplicación corriendo en: ${port}`);
   logger.log(`Documentacion corriendo en: /${uuid}`);
   logger.log(`Aplicacion corriendo en: ${envs.apiPrefix}`);
