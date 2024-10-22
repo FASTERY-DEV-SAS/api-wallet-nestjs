@@ -7,9 +7,8 @@ import { TransfersModule } from 'src/transfers/transfers.module';
 
 @Module({
   controllers: [AnalyticsController],
-  providers: [AnalyticsService,TransfersService],
-  imports: [AuthModule,TransfersModule],
-  exports: [AnalyticsService]
-
+  providers: [AnalyticsService, TransfersService],
+  imports: [AuthModule, TransfersModule],
+  exports: [AnalyticsService],
 })
-export class AnalyticsModule { }
+export class AnalyticsModule {}

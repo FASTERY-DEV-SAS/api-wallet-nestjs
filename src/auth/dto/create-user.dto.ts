@@ -13,7 +13,7 @@ export class CreateUserDto {
     example: 'admin@fastery.dev',
     description: 'The email of the User',
     format: 'email',
-    nullable: false
+    nullable: false,
   })
   @IsString()
   @IsEmail()
@@ -23,7 +23,7 @@ export class CreateUserDto {
     example: 'ADMIN',
     description: 'The username of the User',
     format: 'text',
-    nullable: false
+    nullable: false,
   })
   @IsString()
   userName: string;
@@ -32,7 +32,7 @@ export class CreateUserDto {
     example: 'Abc123',
     description: 'The password of the User',
     format: 'text',
-    nullable: false
+    nullable: false,
   })
   @IsString()
   @MinLength(6)

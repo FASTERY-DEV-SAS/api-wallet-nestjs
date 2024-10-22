@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
@@ -19,19 +12,24 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiBearerAuth()
 @Controller('wallets')
 export class WalletsController {
-
-  constructor(private readonly walletsService: WalletsService) { }
+  constructor(private readonly walletsService: WalletsService) {}
 
   // USER++
   @Post('createWallet')
   @Auth(ValidRoles.user)
-  createWallet(@Body() createWalletDto: CreateWalletDto, @GetUser() user: User) {
+  createWallet(
+    @Body() createWalletDto: CreateWalletDto,
+    @GetUser() user: User,
+  ) {
     return this.walletsService.createWallet(createWalletDto, user);
   }
   // USER++
   @Patch('updateWallet/:id')
   @Auth(ValidRoles.user)
-  updateWallet(@Param('id') id: string, @Body() updateWalletDto: UpdateWalletDto) {
+  updateWallet(
+    @Param('id') id: string,
+    @Body() updateWalletDto: UpdateWalletDto,
+  ) {
     return this.walletsService.updateWallet(id, updateWalletDto);
   }
   // USER++

@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsObject, IsOptional, IsString, MaxLength, MinLength, } from 'class-validator';
-
+import {
+  IsIn,
+  IsObject,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateWalletDto {
   @ApiProperty({
@@ -36,11 +42,12 @@ export class CreateWalletDto {
 
   @ApiProperty({
     example: 'saving',
-    description: 'The type of the wallet. It can be regular, saving or current.',
+    description:
+      'The type of the wallet. It can be regular, saving or current.',
     nullable: false,
   })
   @IsString()
   @MinLength(3)
-  @IsIn(["regular", "saving", "current"])
+  @IsIn(['regular', 'saving', 'current'])
   type: string;
 }

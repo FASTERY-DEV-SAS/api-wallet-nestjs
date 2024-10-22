@@ -25,7 +25,9 @@ export class LoginUserDto {
   })
   @IsString()
   @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres.' })
-  @MaxLength(50,{ message: 'La contraseña debe tener menos de 50 caracteres.' })
+  @MaxLength(50, {
+    message: 'La contraseña debe tener menos de 50 caracteres.',
+  })
   @Matches(/(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message:
       'La contraseña debe tener una letra mayúscula, una minúscula y un número.',

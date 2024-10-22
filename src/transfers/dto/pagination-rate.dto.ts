@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsPositive, IsString, Min } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class PaginationRateDto {
   @IsOptional()
@@ -35,5 +41,4 @@ export class PaginationRateDto {
   @IsString()
   @IsOptional()
   search: string;
-
 }

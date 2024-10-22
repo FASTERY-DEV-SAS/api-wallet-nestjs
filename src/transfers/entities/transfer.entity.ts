@@ -38,18 +38,18 @@ export class Transfer {
   @ManyToOne(() => Category, (category) => category.transfers)
   category: Category;
 
-  @OneToMany(() => Rate, (rate) => rate.transfer, { eager: true, nullable: true })
+  @OneToMany(() => Rate, (rate) => rate.transfer, {
+    eager: true,
+    nullable: true,
+  })
   rates: Rate[];
 
-  @CreateDateColumn({
-  })
+  @CreateDateColumn({})
   createAt: Date;
 
-  @CreateDateColumn({
-  })
+  @CreateDateColumn({})
   operationAt: Date;
 
-  @UpdateDateColumn({
-  })
+  @UpdateDateColumn({})
   updateAt: Date;
 }

@@ -1,4 +1,10 @@
-import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { User } from 'src/auth/entities/user.entity';
@@ -13,10 +19,13 @@ export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) { }
+  ) {}
 
   // USER++
-  async createCategory(createCategoryDto: CreateCategoryDto, user: User): Promise<{
+  async createCategory(
+    createCategoryDto: CreateCategoryDto,
+    user: User,
+  ): Promise<{
     statusCode: HttpStatus;
     message: string;
     categoryId: string;
@@ -27,7 +36,9 @@ export class CategoriesService {
         ...categoryDetails,
         user,
       });
-      const newCategory = await this.categoryRepository.save(createCategoryProv);
+      const newCategory = await this.categoryRepository.save(
+        createCategoryProv,
+      );
       return {
         statusCode: HttpStatus.CREATED,
         message: 'Categoria creada correctamente',
@@ -47,16 +58,17 @@ export class CategoriesService {
   // USER++
   async getCategories(user: User, typeCategory: string) {
     try {
-      const categoryFilter = typeCategory === 'all' ? {} : { type: typeCategory };
+      const categoryFilter =
+        typeCategory === 'all' ? {} : { type: typeCategory };
       const categories = await this.categoryRepository.find({
         where: { user: { id: user.id }, ...categoryFilter },
-        order: { createAt: 'DESC' }
+        order: { createAt: 'DESC' },
       });
       return {
         statusCode: HttpStatus.OK,
         message: 'Categorias obtenidas correctamente',
-        categories
-      }
+        categories,
+      };
     } catch (error) {
       this.logger.error(`Error in getCategories`);
       if (error instanceof BadRequestException) {
@@ -69,10 +81,14 @@ export class CategoriesService {
     }
   }
   // USER++
-  async getCategoriesBalance(user: User, paginationCategoryDto: PaginationCategoryDto) {
+  async getCategoriesBalance(
+    user: User,
+    paginationCategoryDto: PaginationCategoryDto,
+  ) {
     const { month, year, categoryId, type } = paginationCategoryDto;
     try {
-      const query = this.categoryRepository.createQueryBuilder('category')
+      const query = this.categoryRepository
+        .createQueryBuilder('category')
         .leftJoin('category.transfers', 'transfer')
         .select('category.id', 'id')
         .addSelect('category.name', 'name')
@@ -89,13 +105,16 @@ export class CategoriesService {
         query.andWhere('category.type = :type', { type });
       }
 
-
       if (month) {
-        query.andWhere('EXTRACT(MONTH FROM transfer.createAt) = :month', { month });
+        query.andWhere('EXTRACT(MONTH FROM transfer.createAt) = :month', {
+          month,
+        });
       }
 
       if (year) {
-        query.andWhere('EXTRACT(YEAR FROM transfer.createAt) = :year', { year });
+        query.andWhere('EXTRACT(YEAR FROM transfer.createAt) = :year', {
+          year,
+        });
       }
 
       const categories = await query.getRawMany();
@@ -103,11 +122,11 @@ export class CategoriesService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Categorias obtenidas correctamente',
-        categories: categories.map(category => ({
+        categories: categories.map((category) => ({
           id: category.id,
           type: category.type,
           name: category.name,
-          balance: +category.balance || 0 as number,
+          balance: +category.balance || (0 as number),
           transferNumber: category.transferNumber || 0,
         })),
       };
@@ -123,7 +142,10 @@ export class CategoriesService {
     }
   }
   // USER++
-  async getCategory(user: User, id: string): Promise<{
+  async getCategory(
+    user: User,
+    id: string,
+  ): Promise<{
     statusCode: HttpStatus;
     message: string;
     category: Category;
@@ -138,7 +160,7 @@ export class CategoriesService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Categoria obtenida correctamente',
-        category
+        category,
       };
     } catch (error) {
       this.logger.error(`Error in getCategory`);
@@ -152,13 +174,19 @@ export class CategoriesService {
     }
   }
   // USER++
-  async updateCategory(user: User, id: string, updateCategoryDto: UpdateCategoryDto): Promise<{
+  async updateCategory(
+    user: User,
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<{
     statusCode: HttpStatus;
     message: string;
     categoryId: string;
   }> {
     try {
-      const category = await this.categoryRepository.findOne({ where: { id, user: { id: user.id } } });
+      const category = await this.categoryRepository.findOne({
+        where: { id, user: { id: user.id } },
+      });
       if (!category) {
         throw new BadRequestException('Categoria no existe');
       }
@@ -167,7 +195,7 @@ export class CategoriesService {
         statusCode: HttpStatus.OK,
         message: 'Actualizado correctamente',
         categoryId: category.id,
-      }
+      };
     } catch (error) {
       this.logger.error(`Error in updateCategory`);
       if (error instanceof BadRequestException) {
@@ -180,13 +208,18 @@ export class CategoriesService {
     }
   }
   // USER++
-  async deleteCategory(id: string, user: User): Promise<{
+  async deleteCategory(
+    id: string,
+    user: User,
+  ): Promise<{
     statusCode: HttpStatus;
     message: string;
   }> {
     try {
       // Verificar si la categoría existe
-      const category = await this.categoryRepository.findOne({ where: { id, user: { id: user.id } } });
+      const category = await this.categoryRepository.findOne({
+        where: { id, user: { id: user.id } },
+      });
       if (!category) {
         throw new BadRequestException('Categoria no existe');
       }
@@ -203,11 +236,14 @@ export class CategoriesService {
       this.logger.error('Error in deleteCategory', error.stack);
 
       if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message || 'Error en eliminar la categoria');
+        throw new BadRequestException(
+          error.message || 'Error en eliminar la categoria',
+        );
       } else {
-        throw new InternalServerErrorException('Error en eliminar la categoria');
+        throw new InternalServerErrorException(
+          'Error en eliminar la categoria',
+        );
       }
     }
   }
-
 }

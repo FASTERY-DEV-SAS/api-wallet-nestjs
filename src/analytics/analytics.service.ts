@@ -7,11 +7,16 @@ import { TransfersService } from 'src/transfers/transfers.service';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private readonly transfersService: TransfersService) { }
+  constructor(private readonly transfersService: TransfersService) {}
 
   async chartTransfers(user: User, paginationDto: PaginationDto) {
-    const { transfers } = await this.transfersService.getTransfers(user, paginationDto);
-    const dailyData: { [key: string]: { total: number; expense: number; income: number } } = {};
+    const { transfers } = await this.transfersService.getTransfers(
+      user,
+      paginationDto,
+    );
+    const dailyData: {
+      [key: string]: { total: number; expense: number; income: number };
+    } = {};
 
     // Recorre las transferencias y agrúpalas por día
     for (const transfer of transfers) {
@@ -32,18 +37,20 @@ export class AnalyticsService {
     }
 
     // Convierte el objeto en un array, divide expense e income por 100, y ordena por día
-    const chartData = Object.keys(dailyData).map(day => ({
-      day: new Date(day).getDate().toString(), // Extrae solo el día del mes
-      ...dailyData[day],
-    })).sort((a, b) => a.day.localeCompare(b.day));
+    const chartData = Object.keys(dailyData)
+      .map((day) => ({
+        day: new Date(day).getDate().toString(), // Extrae solo el día del mes
+        ...dailyData[day],
+      }))
+      .sort((a, b) => a.day.localeCompare(b.day));
 
     // Calcula el promedio de gastos e ingresos en porcentaje
     const totalDays = chartData.length;
     const totalExpense = chartData.reduce((sum, day) => sum + day.expense, 0);
     const totalIncome = chartData.reduce((sum, day) => sum + day.income, 0);
 
-    const averageExpensePercentage = (totalExpense / totalDays) / 10000;
-    const averageIncomePercentage = (totalIncome / totalDays) / 10000;
+    const averageExpensePercentage = totalExpense / totalDays / 10000;
+    const averageIncomePercentage = totalIncome / totalDays / 10000;
 
     return {
       statusCode: HttpStatus.OK,
@@ -51,7 +58,6 @@ export class AnalyticsService {
       data: chartData,
       averageExpensePercentage: averageExpensePercentage.toFixed(2),
       averageIncomePercentage: averageIncomePercentage.toFixed(2),
-    }
+    };
   }
-
 }

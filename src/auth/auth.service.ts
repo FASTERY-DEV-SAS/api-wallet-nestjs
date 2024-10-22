@@ -22,9 +22,11 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
   // USER++
-  async register(createUserDto: CreateUserDto): Promise<{ statusCode: number; message: string }> {
+  async register(
+    createUserDto: CreateUserDto,
+  ): Promise<{ statusCode: number; message: string }> {
     try {
       const { password, ...userData } = createUserDto;
       const user = this.userRepository.create({
@@ -57,7 +59,8 @@ export class AuthService {
         select: { email: true, password: true, id: true, userName: true },
       });
 
-      if (!user) throw new UnauthorizedException('Credenciales inválidas (email)');
+      if (!user)
+        throw new UnauthorizedException('Credenciales inválidas (email)');
 
       if (!bcrypt.compareSync(password, user.password))
         throw new UnauthorizedException('Credeciales inválidas (password)');
@@ -95,7 +98,6 @@ export class AuthService {
         );
       }
     }
-
   }
   // CERRAR SESIÓN
   // REFRESCAR TOKEN
@@ -111,5 +113,4 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
     return token;
   }
-
 }

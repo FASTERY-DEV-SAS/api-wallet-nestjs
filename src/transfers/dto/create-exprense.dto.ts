@@ -1,11 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsIn, IsNumber, IsObject, IsOptional, IsPositive, IsString, Min, MinLength, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsIn,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Min,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
 import { Category } from 'src/categories/entities/category.entity';
 import { Wallet } from 'src/wallets/entities/wallet.entity';
 import { RateDto } from './rate.dto';
 export class CreateExpenseDto {
-
   @ApiProperty({
     example: [
       {
@@ -15,8 +25,8 @@ export class CreateExpenseDto {
         typeRate: 'fixed',
         value: 10,
         meta: {
-          funcionalidad: "recargabemovil"
-        }
+          funcionalidad: 'recargabemovil',
+        },
       },
       {
         type: 'commission',
@@ -25,8 +35,8 @@ export class CreateExpenseDto {
         typeRate: 'fixed',
         value: 10,
         meta: {
-          funcionalidad: "recargabemovil"
-        }
+          funcionalidad: 'recargabemovil',
+        },
       },
     ],
     description: 'Rates of the transaction',
@@ -54,7 +64,7 @@ export class CreateExpenseDto {
   })
   @IsString()
   @MinLength(3)
-  walletId: Wallet['id'];;
+  walletId: Wallet['id'];
 
   @ApiProperty({
     example: '5cf1f1da-3e6c-492a-8434-C994e006ce41',

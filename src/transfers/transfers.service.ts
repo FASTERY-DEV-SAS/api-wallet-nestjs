@@ -1,4 +1,12 @@
-import { BadRequestException, HttpStatus, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, MoreThanOrEqual, Repository } from 'typeorm';
 import { Transfer } from './entities/transfer.entity';
@@ -15,7 +23,6 @@ import { PaginationRateDto } from './dto/pagination-rate.dto';
 export class TransfersService {
   private readonly logger = new Logger('TransfersService');
   constructor(
-
     @InjectRepository(Rate)
     private readonly rateRepository: Repository<Rate>,
 
@@ -23,7 +30,7 @@ export class TransfersService {
     private readonly transferRepository: Repository<Transfer>,
 
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
   // USER++
   async createIncome(createIncomeDto: CreateIncomeDto, user: User) {
     let amountEntered = createIncomeDto.amount || 0;
@@ -38,12 +45,18 @@ export class TransfersService {
 
     try {
       const wallet = await queryRunner.manager.findOne(Wallet, {
-        where: { id: createIncomeDto.walletId, user: { id: user.id }, isActive: true },
+        where: {
+          id: createIncomeDto.walletId,
+          user: { id: user.id },
+          isActive: true,
+        },
         lock: { mode: 'pessimistic_write' },
       });
 
       if (!wallet) {
-        throw new NotFoundException('Billetera no encontrada o no cumple con los requisitos');
+        throw new NotFoundException(
+          'Billetera no encontrada o no cumple con los requisitos',
+        );
       }
 
       walletBalanceBefore = wallet.balance;
@@ -58,11 +71,16 @@ export class TransfersService {
       walletBalanceAfter = walletBalanceBefore + total;
       console.log('walletBalanceAfter:', walletBalanceAfter);
 
-      await queryRunner.manager.update(Wallet, createIncomeDto.walletId, { balance: walletBalanceAfter });
+      await queryRunner.manager.update(Wallet, createIncomeDto.walletId, {
+        balance: walletBalanceAfter,
+      });
 
       let newRate = null;
       if (createIncomeDto.rates) {
-        const rateCreate = queryRunner.manager.create(Rate, createIncomeDto.rates);
+        const rateCreate = queryRunner.manager.create(
+          Rate,
+          createIncomeDto.rates,
+        );
         newRate = await queryRunner.manager.save(Rate, rateCreate);
       }
 
@@ -81,7 +99,11 @@ export class TransfersService {
       await queryRunner.manager.save(Transfer, transfer);
 
       await queryRunner.commitTransaction();
-      return { message: 'Transferencia realizada con éxito', statusCode: HttpStatus.CREATED, transferId: transfer.id };
+      return {
+        message: 'Transferencia realizada con éxito',
+        statusCode: HttpStatus.CREATED,
+        transferId: transfer.id,
+      };
     } catch (error) {
       console.error('Error in createIncome:', error.stack);
       await queryRunner.rollbackTransaction();
@@ -117,15 +139,24 @@ export class TransfersService {
       }
       console.log('Total', total);
       const wallet = await queryRunner.manager.findOne(Wallet, {
-        where: { id: createExpenseDto.walletId, user: { id: user.id }, isActive: true, balance: MoreThanOrEqual(total) },
+        where: {
+          id: createExpenseDto.walletId,
+          user: { id: user.id },
+          isActive: true,
+          balance: MoreThanOrEqual(total),
+        },
         lock: { mode: 'pessimistic_write' },
       });
       if (!wallet) {
-        throw new NotFoundException('Billtera no encontrada o no tiene los recursos suficientes');
+        throw new NotFoundException(
+          'Billtera no encontrada o no tiene los recursos suficientes',
+        );
       }
 
       if (total > wallet.balance) {
-        throw new BadRequestException('El monto de la transferencia supera el saldo de la billetera');
+        throw new BadRequestException(
+          'El monto de la transferencia supera el saldo de la billetera',
+        );
       }
 
       walletBalanceBefore = wallet.balance;
@@ -133,12 +164,16 @@ export class TransfersService {
 
       walletBalanceAfter = walletBalanceBefore - total;
       console.log('walletBalanceAfter:', walletBalanceAfter);
-      await queryRunner.manager.update(Wallet, createExpenseDto.walletId, { balance: walletBalanceAfter });
-
+      await queryRunner.manager.update(Wallet, createExpenseDto.walletId, {
+        balance: walletBalanceAfter,
+      });
 
       let newRate = null;
       if (createExpenseDto.rates) {
-        const rateCreate = queryRunner.manager.create(Rate, createExpenseDto.rates);
+        const rateCreate = queryRunner.manager.create(
+          Rate,
+          createExpenseDto.rates,
+        );
         newRate = await queryRunner.manager.save(Rate, rateCreate);
       }
       // Crear transferencia
@@ -156,7 +191,11 @@ export class TransfersService {
       await queryRunner.manager.save(Transfer, transfer);
 
       await queryRunner.commitTransaction();
-      return { message: 'Transferencia realizada con éxito', statusCode: HttpStatus.CREATED, transferId: transfer.id };
+      return {
+        message: 'Transferencia realizada con éxito',
+        statusCode: HttpStatus.CREATED,
+        transferId: transfer.id,
+      };
     } catch (error) {
       this.logger.error('Error in createExpense');
       await queryRunner.rollbackTransaction();
@@ -176,17 +215,17 @@ export class TransfersService {
   private calculateTotal(rateDto: RateDto[], amountEntered: number): number {
     let total = amountEntered;
 
-    rateDto.forEach(transaction => {
+    rateDto.forEach((transaction) => {
       let transactionAmount = transaction.value;
 
-      if (transaction.typeRate === "percentage") {
+      if (transaction.typeRate === 'percentage') {
         transactionAmount = (transaction.value / 10000) * amountEntered;
         // 1=0.01% 100=1% 1000=10% 10000=100%
       }
 
-      if (transaction.incomeExpenseType === "income") {
+      if (transaction.incomeExpenseType === 'income') {
         total += transactionAmount;
-      } else if (transaction.incomeExpenseType === "expense") {
+      } else if (transaction.incomeExpenseType === 'expense') {
         total -= transactionAmount;
       }
       // console.log('total:', total);
@@ -211,22 +250,33 @@ export class TransfersService {
         .leftJoinAndSelect('transfers.category', 'category')
         .leftJoinAndSelect('transfers.rates', 'rates')
         .where('wallet.user = :userId', { userId: user.id })
-        .andWhere('EXTRACT(MONTH FROM transfers.operationAt) = :month', { month })
+        .andWhere('EXTRACT(MONTH FROM transfers.operationAt) = :month', {
+          month,
+        })
         .andWhere('EXTRACT(YEAR FROM transfers.operationAt) = :year', { year });
 
       if (paginationDto.walletId) {
-        baseQuery.andWhere('wallet.id = :walletId', { walletId: paginationDto.walletId });
+        baseQuery.andWhere('wallet.id = :walletId', {
+          walletId: paginationDto.walletId,
+        });
       }
 
       if (paginationDto.categoryId) {
-        baseQuery.andWhere('category.id = :categoryId', { categoryId: paginationDto.categoryId });
+        baseQuery.andWhere('category.id = :categoryId', {
+          categoryId: paginationDto.categoryId,
+        });
       }
       if (paginationDto.type !== 'all') {
-        baseQuery.andWhere('transfers.type = :type', { type: paginationDto.type });
+        baseQuery.andWhere('transfers.type = :type', {
+          type: paginationDto.type,
+        });
       }
 
       if (paginationDto.search) {
-        baseQuery.andWhere('(transfers.meta::text ILIKE :search OR transfers.status ILIKE :search)', { search: `%${paginationDto.search}%` });
+        baseQuery.andWhere(
+          '(transfers.meta::text ILIKE :search OR transfers.status ILIKE :search)',
+          { search: `%${paginationDto.search}%` },
+        );
       }
 
       // Consulta para obtener las transferencias con paginación
@@ -242,27 +292,38 @@ export class TransfersService {
         .leftJoinAndSelect('transfers.category', 'category')
         .select(
           "SUM(CASE WHEN transfers.type = 'income' THEN transfers.total WHEN transfers.type = 'expense' THEN -transfers.total ELSE 0 END)",
-          'sum'
+          'sum',
         )
         .leftJoin('transfers.wallet', 'wallet')
         .where('wallet.user = :userId', { userId: user.id })
-        .andWhere('EXTRACT(MONTH FROM transfers.operationAt) = :month', { month })
+        .andWhere('EXTRACT(MONTH FROM transfers.operationAt) = :month', {
+          month,
+        })
         .andWhere('EXTRACT(YEAR FROM transfers.operationAt) = :year', { year });
 
       if (paginationDto.walletId) {
-        totalSumQuery.andWhere('wallet.id = :walletId', { walletId: paginationDto.walletId });
+        totalSumQuery.andWhere('wallet.id = :walletId', {
+          walletId: paginationDto.walletId,
+        });
       }
 
       if (paginationDto.categoryId) {
-        totalSumQuery.andWhere('category.id = :categoryId', { categoryId: paginationDto.categoryId });
+        totalSumQuery.andWhere('category.id = :categoryId', {
+          categoryId: paginationDto.categoryId,
+        });
       }
 
       if (paginationDto.type !== 'all') {
-        totalSumQuery.andWhere('transfers.type = :type', { type: paginationDto.type });
+        totalSumQuery.andWhere('transfers.type = :type', {
+          type: paginationDto.type,
+        });
       }
 
       if (paginationDto.search) {
-        totalSumQuery.andWhere('(transfers.meta::text ILIKE :search OR transfers.status ILIKE :search)', { search: `%${paginationDto.search}%` });
+        totalSumQuery.andWhere(
+          '(transfers.meta::text ILIKE :search OR transfers.status ILIKE :search)',
+          { search: `%${paginationDto.search}%` },
+        );
       }
 
       const totalSumResult = await totalSumQuery.getRawOne();
@@ -317,20 +378,28 @@ export class TransfersService {
   // USER+
   async getRates(user: User, paginationRateDto: PaginationRateDto) {
     console.log('paginationRateDto:', paginationRateDto);
-    const { limit, offset, month, year, walletId, type, subType, search } = paginationRateDto;
+    const { limit, offset, month, year, walletId, type, subType, search } =
+      paginationRateDto;
     try {
-      const totalValueQuery = this.rateRepository.createQueryBuilder('rates')
+      const totalValueQuery = this.rateRepository
+        .createQueryBuilder('rates')
         .leftJoin('rates.transfer', 'transfer')
         .leftJoin('transfer.wallet', 'wallet')
         .select('SUM(rates.value)', 'total')
         .where('wallet.userId = :userId', { userId: user.id });
 
       if (month) {
-        totalValueQuery.andWhere('EXTRACT(MONTH FROM transfer.operationAt) = :month', { month });
+        totalValueQuery.andWhere(
+          'EXTRACT(MONTH FROM transfer.operationAt) = :month',
+          { month },
+        );
       }
 
       if (year) {
-        totalValueQuery.andWhere('EXTRACT(YEAR FROM transfer.operationAt) = :year', { year });
+        totalValueQuery.andWhere(
+          'EXTRACT(YEAR FROM transfer.operationAt) = :year',
+          { year },
+        );
       }
 
       if (walletId && walletId !== 'all') {
@@ -346,22 +415,30 @@ export class TransfersService {
       }
 
       if (search) {
-        totalValueQuery.andWhere('CAST(rates.meta AS TEXT) LIKE :search', { search: `%${search}%` });
+        totalValueQuery.andWhere('CAST(rates.meta AS TEXT) LIKE :search', {
+          search: `%${search}%`,
+        });
       }
 
       const totalValueResult = await totalValueQuery.getRawOne();
 
-      const ratesQuery = this.rateRepository.createQueryBuilder('rates')
+      const ratesQuery = this.rateRepository
+        .createQueryBuilder('rates')
         .leftJoinAndSelect('rates.transfer', 'transfer')
         .leftJoinAndSelect('transfer.wallet', 'wallet')
         .where('wallet.userId = :userId', { userId: user.id });
 
       if (month) {
-        ratesQuery.andWhere('EXTRACT(MONTH FROM transfer.operationAt) = :month', { month });
+        ratesQuery.andWhere(
+          'EXTRACT(MONTH FROM transfer.operationAt) = :month',
+          { month },
+        );
       }
 
       if (year) {
-        ratesQuery.andWhere('EXTRACT(YEAR FROM transfer.operationAt) = :year', { year });
+        ratesQuery.andWhere('EXTRACT(YEAR FROM transfer.operationAt) = :year', {
+          year,
+        });
       }
 
       if (walletId && walletId !== 'all') {
@@ -377,10 +454,13 @@ export class TransfersService {
       }
 
       if (search) {
-        ratesQuery.andWhere('CAST(rates.meta AS TEXT) LIKE :search', { search: `%${search}%` });
+        ratesQuery.andWhere('CAST(rates.meta AS TEXT) LIKE :search', {
+          search: `%${search}%`,
+        });
       }
 
-      ratesQuery.orderBy('rates.createAt', 'DESC')
+      ratesQuery
+        .orderBy('rates.createAt', 'DESC')
         .skip(offset || 0)
         .take(limit || 250);
 
@@ -405,6 +485,4 @@ export class TransfersService {
       }
     }
   }
-
-
 }

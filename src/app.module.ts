@@ -15,8 +15,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     TypeOrmModule.forRoot({
       ssl: envs.sta === 'prod',
       extra: {
-        ssl:
-          envs.sta === 'prod' ? { rejectUnauthorized: false } : null,
+        ssl: envs.sta === 'prod' ? { rejectUnauthorized: false } : null,
       },
       type: 'postgres',
       host: envs.dbHost,
@@ -37,4 +36,4 @@ import { AnalyticsModule } from './analytics/analytics.module';
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -12,12 +21,15 @@ import { PaginationCategoryDto } from './dto/pagination-category.dto';
 @ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) { }
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   // USER++
   @Post('createCategory')
   @Auth(ValidRoles.user)
-  createCategory(@Body() createCategoryDto: CreateCategoryDto, @GetUser() user: User) {
+  createCategory(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @GetUser() user: User,
+  ) {
     return this.categoriesService.createCategory(createCategoryDto, user);
   }
 
@@ -25,15 +37,22 @@ export class CategoriesController {
   @Get('getCategories')
   @Auth(ValidRoles.user)
   getCategories(
-    @GetUser() user: User, @Query('typeCategory') typeCategory: string) {
+    @GetUser() user: User,
+    @Query('typeCategory') typeCategory: string,
+  ) {
     return this.categoriesService.getCategories(user, typeCategory);
   }
   // USER
   @Get('getCategoriesBalance')
   @Auth(ValidRoles.user)
   getCategoriesBalance(
-    @GetUser() user: User, @Query() paginationCategoryDto: PaginationCategoryDto) {
-    return this.categoriesService.getCategoriesBalance(user, paginationCategoryDto);
+    @GetUser() user: User,
+    @Query() paginationCategoryDto: PaginationCategoryDto,
+  ) {
+    return this.categoriesService.getCategoriesBalance(
+      user,
+      paginationCategoryDto,
+    );
   }
 
   // USER++
@@ -45,7 +64,11 @@ export class CategoriesController {
   // USER++
   @Patch('updateCategory/:id')
   @Auth(ValidRoles.user)
-  updateCategory(@GetUser() user: User, @Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+  updateCategory(
+    @GetUser() user: User,
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ) {
     return this.categoriesService.updateCategory(user, id, updateCategoryDto);
   }
   // USER++

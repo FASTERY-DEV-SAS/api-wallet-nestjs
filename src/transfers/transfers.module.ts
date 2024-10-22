@@ -17,4 +17,4 @@ import { AuthModule } from 'src/auth/auth.module';
   ],
   exports: [TransfersService, TypeOrmModule],
 })
-export class TransfersModule { }
+export class TransfersModule {}

@@ -39,4 +39,3 @@ export class Category {
   @OneToMany(() => Transfer, (transfer) => transfer.category)
   transfers: Transfer[];
 }
-

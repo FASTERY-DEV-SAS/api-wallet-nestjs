@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { TransfersService } from './transfers.service';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles';
@@ -21,11 +14,9 @@ import { PaginationRateDto } from './dto/pagination-rate.dto';
 @ApiBearerAuth()
 @Controller('transfers')
 export class TransfersController {
-  constructor(
-    private readonly transfersService: TransfersService,
-  ) { }
+  constructor(private readonly transfersService: TransfersService) {}
 
-    // @Post('transfer')
+  // @Post('transfer')
   // @Auth(ValidRoles.user)
   // transferWalletToWallet(@Body() createTransferDto: CreateTransferDto, @GetUser() user: User) {
   //   return this.transfersService.transferWalletToWallet(createTransferDto, user);
@@ -34,21 +25,27 @@ export class TransfersController {
   // USER+
   @Post('createExpense')
   @Auth(ValidRoles.user)
-  createExpense(@Body() createExpenseDto: CreateExpenseDto, @GetUser() user: User) {
+  createExpense(
+    @Body() createExpenseDto: CreateExpenseDto,
+    @GetUser() user: User,
+  ) {
     return this.transfersService.createExpense(createExpenseDto, user);
   }
 
   // USER+
   @Post('createIncome')
   @Auth(ValidRoles.user)
-  createIncome(@Body() createIncomeDto: CreateIncomeDto, @GetUser() user: User) {
+  createIncome(
+    @Body() createIncomeDto: CreateIncomeDto,
+    @GetUser() user: User,
+  ) {
     return this.transfersService.createIncome(createIncomeDto, user);
   }
   // USER+
   @Get('getTransfer/:id')
   @Auth(ValidRoles.user)
   getTransfer(@GetUser() user: User, @Param('id') id: string) {
-    return this.transfersService.getTransfer(id,user);
+    return this.transfersService.getTransfer(id, user);
   }
   // USER+
   @Get('getTransfers')
@@ -59,8 +56,10 @@ export class TransfersController {
   // USER
   @Get('getRates')
   @Auth(ValidRoles.user)
-  getRates(@GetUser() user: User, @Query() paginationRateDto: PaginationRateDto) {
+  getRates(
+    @GetUser() user: User,
+    @Query() paginationRateDto: PaginationRateDto,
+  ) {
     return this.transfersService.getRates(user, paginationRateDto);
   }
-
 }

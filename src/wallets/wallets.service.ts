@@ -1,4 +1,11 @@
-import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wallet } from './entities/wallet.entity';
@@ -17,10 +24,13 @@ export class WalletsService {
 
     @InjectRepository(Transfer)
     private readonly transferRepository: Repository<Transfer>,
-  ) { }
+  ) {}
 
   // USER++
-  async createWallet(createWalletDto: CreateWalletDto, user: User): Promise<{
+  async createWallet(
+    createWalletDto: CreateWalletDto,
+    user: User,
+  ): Promise<{
     statusCode: HttpStatus;
     message: string;
     walletId: string;
@@ -54,7 +64,10 @@ export class WalletsService {
     }
   }
   // USER++
-  async updateWallet(id: string, updateWalletDto: UpdateWalletDto): Promise<{
+  async updateWallet(
+    id: string,
+    updateWalletDto: UpdateWalletDto,
+  ): Promise<{
     statusCode: HttpStatus;
     message: string;
     walletId: string;
@@ -65,7 +78,7 @@ export class WalletsService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Billetera actualizada con éxito',
-        walletId: id
+        walletId: id,
       };
     } catch (error) {
       this.logger.error(`Error in updateWallet`);
@@ -79,29 +92,34 @@ export class WalletsService {
     }
   }
   // USER++
-  async getWallet(walletId: string, user: User): Promise<{
+  async getWallet(
+    walletId: string,
+    user: User,
+  ): Promise<{
     wallet: Wallet;
     statusCode: HttpStatus;
     message: string;
   }> {
     try {
-      const wallet = await this.walletRepository.findOne({ where: { id: walletId, user: { id: user.id } } });
+      const wallet = await this.walletRepository.findOne({
+        where: { id: walletId, user: { id: user.id } },
+      });
       return {
         statusCode: HttpStatus.OK,
         wallet,
         message: 'Billetera del usuario',
-      }
+      };
     } catch (error) {
       this.logger.error(`Error in getOneWallet`);
       if (error instanceof BadRequestException) {
         error.message || 'Ocurrió un error al obtener la billetera del usuario';
       } else {
         throw new InternalServerErrorException(
-          error.message || 'Ocurrió un error al obtener la billetera del usuario',
+          error.message ||
+            'Ocurrió un error al obtener la billetera del usuario',
         );
       }
     }
-
   }
   // USER++
   async getWallets(user: User): Promise<{
@@ -113,25 +131,26 @@ export class WalletsService {
       const wallets = await this.walletRepository.find({
         where: { user: { id: user.id } },
         order: {
-          balance: 'DESC'
-        }
+          balance: 'DESC',
+        },
       });
       return {
         wallets,
         statusCode: HttpStatus.OK,
         message: 'Billeteras del usuario',
-      }
+      };
     } catch (error) {
       this.logger.error(`Error in getWallets`);
       if (error instanceof BadRequestException) {
-        error.message || 'Ocurrió un error al obtener las billeteras del usuario';
+        error.message ||
+          'Ocurrió un error al obtener las billeteras del usuario';
       } else {
         throw new InternalServerErrorException(
-          error.message || 'Ocurrió un error al obtener las billeteras del usuario',
+          error.message ||
+            'Ocurrió un error al obtener las billeteras del usuario',
         );
       }
     }
-
   }
   // USER++
   async getTotalBalanceOfWallets(user: User): Promise<{
@@ -157,10 +176,12 @@ export class WalletsService {
     } catch (error) {
       this.logger.error(`Error in getTotalBalanceOfWallets`);
       if (error instanceof BadRequestException) {
-        error.message || 'Ocurrió un error al obtener el balance general de las billeteras';
+        error.message ||
+          'Ocurrió un error al obtener el balance general de las billeteras';
       } else {
         throw new InternalServerErrorException(
-          error.message || 'Ocurrió un error al obtener el balance general de las billeteras',
+          error.message ||
+            'Ocurrió un error al obtener el balance general de las billeteras',
         );
       }
     }
@@ -175,7 +196,7 @@ export class WalletsService {
       // Obtener la billetera por ID con las transferencias y sus categorías
       const wallet = await this.walletRepository.findOne({
         where: { id: walletId },
-        relations: ['transfers', 'transfers.category'],  // Incluir las transferencias y categorías relacionadas
+        relations: ['transfers', 'transfers.category'], // Incluir las transferencias y categorías relacionadas
       });
 
       if (!wallet) {
@@ -213,7 +234,9 @@ export class WalletsService {
     } catch (error) {
       this.logger.error(`Error in updateWalletBalance`, error.stack);
       if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message || 'Error updating wallet balance');
+        throw new BadRequestException(
+          error.message || 'Error updating wallet balance',
+        );
       } else {
         throw new InternalServerErrorException(
           error.message || 'Error updating wallet balance',
@@ -229,7 +252,9 @@ export class WalletsService {
       });
 
       if (!wallet) {
-        throw new BadRequestException('Wallet not found or does not belong to the user');
+        throw new BadRequestException(
+          'Wallet not found or does not belong to the user',
+        );
       }
 
       const transfers = await this.transferRepository.find({
@@ -266,7 +291,9 @@ export class WalletsService {
     } catch (error) {
       this.logger.error(`Error in validateWalletBalance`, error.stack);
       if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message || 'Error validating wallet balance');
+        throw new BadRequestException(
+          error.message || 'Error validating wallet balance',
+        );
       } else {
         throw new InternalServerErrorException(
           error.message || 'Error validating wallet balance',

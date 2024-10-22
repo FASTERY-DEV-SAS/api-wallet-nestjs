@@ -14,6 +14,6 @@ import { TransfersModule } from 'src/transfers/transfers.module';
     forwardRef(() => TransfersModule),
     TypeOrmModule.forFeature([Wallet]),
   ],
-  exports: [WalletsService,TypeOrmModule],
+  exports: [WalletsService, TypeOrmModule],
 })
-export class WalletsModule { }
+export class WalletsModule {}

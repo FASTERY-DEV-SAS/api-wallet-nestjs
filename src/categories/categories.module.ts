@@ -9,7 +9,7 @@ import { TransfersModule } from 'src/transfers/transfers.module';
 @Module({
   controllers: [CategoriesController],
   providers: [CategoriesService],
-  imports: [AuthModule,TypeOrmModule.forFeature([Category]),TransfersModule],
+  imports: [AuthModule, TypeOrmModule.forFeature([Category]), TransfersModule],
   exports: [],
 })
 export class CategoriesModule {}
