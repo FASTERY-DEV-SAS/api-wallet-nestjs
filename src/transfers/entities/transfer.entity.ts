@@ -1,4 +1,3 @@
-import { User } from 'src/auth/entities/user.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Wallet } from 'src/wallets/entities/wallet.entity';
 import {
@@ -19,6 +18,9 @@ export class Transfer {
 
   @Column('text')
   type: string;
+
+  @Column('text',{default: 'SIN DESCRIPCION', nullable: true})
+  description: string;
 
   @Column({ type: 'int', nullable: true, default: 0 })
   walletBalanceBefore: number;
