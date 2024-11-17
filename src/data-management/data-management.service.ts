@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateCedulaDto } from './dto/create-cedula.dto';
 import { UpdateCedulaDto } from './dto/update-cedula.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,7 +11,7 @@ import { envs } from 'src/config';
 
 @Injectable()
 export class DataManagementService {
-
+  private readonly logger = new Logger('DataManagementService');
   constructor(
     private readonly httpService: HttpService,
 
@@ -52,16 +52,23 @@ export class DataManagementService {
         Accept: 'application/json',
       };
 
-      const response = await firstValueFrom(this.httpService.get(apiUrl, { headers }));
+      // Realizar la solicitud a la API externa
+      const response = await firstValueFrom(
+        this.httpService.get(apiUrl, { headers }),
+      );
 
-      if (!response?.data?.response) {
+      // Corregir acceso a los datos de la API
+      console.log("response", response.data);
+      const apiData = response.data?.data; // Acceso a la propiedad `data`
+      console.log("apiData", apiData);
+
+      if (!apiData || !apiData.response) {
         throw new NotFoundException(`Cédula ${cedula} no encontrada en la API externa.`);
       }
 
-      // Extrae los datos de la respuesta
-      const apiResponse = response.data.response;
+      const apiResponse = apiData.response;
 
-      // Construye el DTO y guarda los datos en la base de datos
+      // Construir el DTO para guardar en la base de datos
       const createCedulaDto: CreateCedulaDto = {
         identificacion: apiResponse.identificacion,
         nombreCompleto: apiResponse.nombreCompleto,
@@ -70,14 +77,25 @@ export class DataManagementService {
         fechaDefuncion: apiResponse.fechaDefuncion || null,
       };
 
+      // Guardar en la base de datos y devolver el resultado
       return await this.createCedula(createCedulaDto);
     } catch (error) {
+      this.logger.error(`Error en getCedula by ${cedula}`, error.stack);
+
+      // Manejo de errores específicos
+      if (error.response && error.response.status === 404) {
+        throw new NotFoundException(`La cédula ${cedula} no fue encontrada en la API externa.`);
+      }
+
+      // Lanza un error genérico para otros casos
       throw new HttpException(
         error?.response?.data?.message || 'Error al obtener la cédula',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
+
+
 
 
 }

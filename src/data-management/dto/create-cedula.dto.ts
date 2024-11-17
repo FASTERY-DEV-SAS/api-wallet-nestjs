@@ -15,5 +15,5 @@ export class CreateCedulaDto {
 
   @IsOptional()
   @IsString()
-  fechaDefuncion?: string;
+  fechaDefuncion?: any;
 }
