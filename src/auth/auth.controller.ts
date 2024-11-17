@@ -5,6 +5,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,9 +26,8 @@ export class AuthController {
     return this.authService.register(createUserDto);
   }
   // USER++
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  login(@Body() loginUserDto: LoginUserDto) {
+  @Get('login')
+  login(@Query() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto);
   }
   // USER++

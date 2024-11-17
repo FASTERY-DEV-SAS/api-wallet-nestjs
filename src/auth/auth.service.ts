@@ -66,9 +66,8 @@ export class AuthService {
         throw new UnauthorizedException('Credeciales inválidas (password)');
       delete user.password;
       return {
-        user,
-        token: this.getJwtToken({ id: user.id }),
-        statusCode: HttpStatus.OK,
+        ...user,
+        token: this.getJwtToken({ id: user.id })
       };
     } catch (error) {
       this.logger.error(`Error in login ${loginUserDto.email}`, error);

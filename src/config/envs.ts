@@ -11,6 +11,13 @@ interface EnvVars {
   DB_PORT: number;
   DB_USER: string;
   JWT_SECRET: string;
+  TOKEN_WEBSERVICES: string;
+  // DATA_MANAGEMENT
+  DB_PASS_DATA_MANAGEMENT: string;
+  DB_NAME_DATA_MANAGEMENT: string;
+  DB_HOST_DATA_MANAGEMENT: string;
+  DB_PORT_DATA_MANAGEMENT: number;
+  DB_USER_DATA_MANAGEMENT: string;
 }
 
 const envsSchema = joi
@@ -24,6 +31,13 @@ const envsSchema = joi
     DB_PORT: joi.number().required(),
     DB_USER: joi.string().required(),
     JWT_SECRET: joi.string().required(),
+    TOKEN_WEBSERVICES: joi.string().required(),
+    // DATA_MANAGEMENT
+    DB_PASS_DATA_MANAGEMENT: joi.string().required(),
+    DB_NAME_DATA_MANAGEMENT: joi.string().required(),
+    DB_HOST_DATA_MANAGEMENT: joi.string().required(),
+    DB_PORT_DATA_MANAGEMENT: joi.number().required(),
+    DB_USER_DATA_MANAGEMENT: joi.string().required(),
   })
   .unknown(true);
 
@@ -45,4 +59,10 @@ export const envs = {
   dbPort: envVars.DB_PORT,
   dbUser: envVars.DB_USER,
   jwtSecret: envVars.JWT_SECRET,
+  tokenWebservices: envVars.TOKEN_WEBSERVICES,
+  dbPassDataManagement: envVars.DB_PASS_DATA_MANAGEMENT,
+  dbNameDataManagement: envVars.DB_NAME_DATA_MANAGEMENT,
+  dbHostDataManagement: envVars.DB_HOST_DATA_MANAGEMENT,
+  dbPortDataManagement: envVars.DB_PORT_DATA_MANAGEMENT,
+  dbUserDataManagement: envVars.DB_USER_DATA_MANAGEMENT,
 };
