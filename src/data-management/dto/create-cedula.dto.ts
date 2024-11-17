@@ -1,7 +1,8 @@
-import { IsString, IsOptional, IsDate, IsUUID } from 'class-validator';
+import { IsString, IsOptional, IsDate, IsUUID, Length } from 'class-validator';
 
 export class CreateCedulaDto {
   @IsString()
+  @Length(10, 10, { message: 'La identificación debe tener exactamente 10 caracteres.' })
   identificacion: string;
 
   @IsString()
