@@ -7,11 +7,6 @@ import { UpdateCedulaDto } from './dto/update-cedula.dto';
 export class DataManagementController {
   constructor(private readonly dataManagementService: DataManagementService) { }
 
-  @Post('createCedula')
-  createCedula(@Body() createCedulaDto: CreateCedulaDto) {
-    return this.dataManagementService.createCedula(createCedulaDto);
-  }
-
   @Get('getCedula/:cedula')
   getCedula(@Param('cedula') cedula: string) {
     return this.dataManagementService.getCedula(cedula);
