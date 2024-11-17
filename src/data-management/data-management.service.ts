@@ -22,7 +22,7 @@ export class DataManagementService {
     private readonly rucRepository: Repository<Ruc>,
   ) { }
 
-  async createCedula(createCedulaDto: CreateCedulaDto): Promise<Cedula> {
+  private async createCedula(createCedulaDto: CreateCedulaDto): Promise<Cedula> {
     try {
       const cedula = this.cedulaRepository.create(createCedulaDto);
       return await this.cedulaRepository.save(cedula);
@@ -52,15 +52,11 @@ export class DataManagementService {
         Accept: 'application/json',
       };
 
-      // Realizar la solicitud a la API externa
       const response = await firstValueFrom(
         this.httpService.get(apiUrl, { headers }),
       );
 
-      // Corregir acceso a los datos de la API
-      console.log("response", response.data);
-      const apiData = response.data?.data; // Acceso a la propiedad `data`
-      console.log("apiData", apiData);
+      const apiData = response.data?.data;
 
       if (!apiData || !apiData.response) {
         throw new NotFoundException(`Cédula ${cedula} no encontrada en la API externa.`);
@@ -68,7 +64,6 @@ export class DataManagementService {
 
       const apiResponse = apiData.response;
 
-      // Construir el DTO para guardar en la base de datos
       const createCedulaDto: CreateCedulaDto = {
         identificacion: apiResponse.identificacion,
         nombreCompleto: apiResponse.nombreCompleto,
@@ -77,17 +72,12 @@ export class DataManagementService {
         fechaDefuncion: apiResponse.fechaDefuncion || null,
       };
 
-      // Guardar en la base de datos y devolver el resultado
       return await this.createCedula(createCedulaDto);
     } catch (error) {
       this.logger.error(`Error en getCedula by ${cedula}`, error.stack);
-
-      // Manejo de errores específicos
       if (error.response && error.response.status === 404) {
         throw new NotFoundException(`La cédula ${cedula} no fue encontrada en la API externa.`);
       }
-
-      // Lanza un error genérico para otros casos
       throw new HttpException(
         error?.response?.data?.message || 'Error al obtener la cédula',
         HttpStatus.INTERNAL_SERVER_ERROR,
