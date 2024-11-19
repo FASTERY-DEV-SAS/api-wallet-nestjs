@@ -22,7 +22,7 @@ import { envs } from 'src/config';
       useFactory: (configService: ConfigService) => {
         return {
           secret: envs.jwtSecret,
-          signOptions: { expiresIn: '30s' },
+          signOptions: { expiresIn: '2m' },
         };
       },
     }),

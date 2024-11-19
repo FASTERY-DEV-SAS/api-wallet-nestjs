@@ -14,6 +14,7 @@ import { GetUser } from './decorators/get-user.decorator';
 import { User } from './entities/user.entity';
 import { Auth } from './decorators/auth.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { ValidRoles } from './interfaces/valid-roles';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -37,8 +38,8 @@ export class AuthController {
     return this.authService.getUserData(user);
   }
   // USER
-  @Get('check-auth-status')
-  @Auth()
+  @Get('checkAuthStatus')
+  @Auth(ValidRoles.admin,ValidRoles.user)
   checkAuthStatus(@GetUser() user: User) {
     return this.authService.checkAuthStatus(user);
   }

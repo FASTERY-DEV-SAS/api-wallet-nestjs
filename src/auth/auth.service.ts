@@ -22,7 +22,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
   // USER++
   async register(
     createUserDto: CreateUserDto,
@@ -56,7 +56,7 @@ export class AuthService {
       const { password, email } = loginUserDto;
       const user = await this.userRepository.findOne({
         where: { email, isActive: true },
-        select: { email: true, password: true, id: true, userName: true },
+        select: { email: true, password: true, id: true, userName: true, roles: true },
       });
 
       if (!user)
@@ -67,7 +67,7 @@ export class AuthService {
       delete user.password;
       return {
         ...user,
-        token: this.getJwtToken({ id: user.id })
+        accessToken: this.getJwtToken({ id: user.id })
       };
     } catch (error) {
       this.logger.error(`Error in login ${loginUserDto.email}`, error);
@@ -104,7 +104,7 @@ export class AuthService {
   async checkAuthStatus(user: User) {
     return {
       ...user,
-      token: this.getJwtToken({ id: user.id }),
+      accessToken: this.getJwtToken({ id: user.id }),
     };
   }
   // SERVER++
