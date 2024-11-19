@@ -101,7 +101,6 @@ export class TransfersService {
       await queryRunner.commitTransaction();
       return {
         message: 'Transferencia realizada con éxito',
-        statusCode: HttpStatus.CREATED,
         transferId: transfer.id,
       };
     } catch (error) {
@@ -193,7 +192,6 @@ export class TransfersService {
       await queryRunner.commitTransaction();
       return {
         message: 'Transferencia realizada con éxito',
-        statusCode: HttpStatus.CREATED,
         transferId: transfer.id,
       };
     } catch (error) {
@@ -330,7 +328,6 @@ export class TransfersService {
       const totalSum = totalSumResult ? Number(totalSumResult.sum) : 0;
 
       return {
-        statusCode: HttpStatus.OK,
         message: 'Transferencias obtenidas con éxito',
         transfers,
         balance: totalSum,
@@ -358,7 +355,6 @@ export class TransfersService {
       }
 
       return {
-        statusCode: HttpStatus.OK,
         message: 'Transferencia obtenida con éxito',
         transfer,
       };
@@ -467,7 +463,6 @@ export class TransfersService {
       const rates = await ratesQuery.getMany();
 
       return {
-        statusCode: HttpStatus.OK,
         message: 'Tasas obtenidas con éxito',
         balance: totalValueResult?.total || 0,
         rates,

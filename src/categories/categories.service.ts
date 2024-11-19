@@ -26,7 +26,6 @@ export class CategoriesService {
     createCategoryDto: CreateCategoryDto,
     user: User,
   ): Promise<{
-    statusCode: HttpStatus;
     message: string;
     categoryId: string;
   }> {
@@ -40,7 +39,6 @@ export class CategoriesService {
         createCategoryProv,
       );
       return {
-        statusCode: HttpStatus.CREATED,
         message: 'Categoria creada correctamente',
         categoryId: newCategory.id,
       };
@@ -65,7 +63,6 @@ export class CategoriesService {
         order: { createAt: 'DESC' },
       });
       return {
-        statusCode: HttpStatus.OK,
         message: 'Categorias obtenidas correctamente',
         categories,
       };
@@ -120,7 +117,6 @@ export class CategoriesService {
       const categories = await query.getRawMany();
 
       return {
-        statusCode: HttpStatus.OK,
         message: 'Categorias obtenidas correctamente',
         categories: categories.map((category) => ({
           id: category.id,
@@ -146,7 +142,6 @@ export class CategoriesService {
     user: User,
     id: string,
   ): Promise<{
-    statusCode: HttpStatus;
     message: string;
     category: Category;
   }> {
@@ -158,7 +153,6 @@ export class CategoriesService {
         throw new BadRequestException('Categoria no existe');
       }
       return {
-        statusCode: HttpStatus.OK,
         message: 'Categoria obtenida correctamente',
         category,
       };
@@ -179,7 +173,6 @@ export class CategoriesService {
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<{
-    statusCode: HttpStatus;
     message: string;
     categoryId: string;
   }> {
@@ -192,7 +185,6 @@ export class CategoriesService {
       }
       await this.categoryRepository.update(id, updateCategoryDto);
       return {
-        statusCode: HttpStatus.OK,
         message: 'Actualizado correctamente',
         categoryId: category.id,
       };
@@ -212,7 +204,6 @@ export class CategoriesService {
     id: string,
     user: User,
   ): Promise<{
-    statusCode: HttpStatus;
     message: string;
   }> {
     try {
@@ -229,7 +220,6 @@ export class CategoriesService {
 
       // Retornar respuesta exitosa
       return {
-        statusCode: HttpStatus.OK,
         message: 'Categoria eliminada correctamente',
       };
     } catch (error) {

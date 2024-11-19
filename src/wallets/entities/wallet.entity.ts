@@ -15,7 +15,7 @@ export class Wallet {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   name: string;
 
   @Column({ type: 'text', default: 'USD' })
@@ -30,10 +30,10 @@ export class Wallet {
   @Column({ type: 'int', default: 0 })
   balance: number;
 
-  @CreateDateColumn({})
+  @CreateDateColumn()
   createAt: Date;
 
-  @UpdateDateColumn({})
+  @UpdateDateColumn()
   updateAt: Date;
 
   @Column({ type: 'text' })

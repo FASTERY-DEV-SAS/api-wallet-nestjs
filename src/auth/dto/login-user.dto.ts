@@ -4,22 +4,25 @@ import {
   IsString,
   Matches,
   MaxLength,
-  Min,
   MinLength,
 } from 'class-validator';
 
 export class LoginUserDto {
   @ApiProperty({
-    example: 'recargaloya@fastery.dev',
+    example: 'empresa@fastery.dev',
     description: 'The email of the user.',
     nullable: false,
   })
-  @IsString()
-  @IsEmail()
+  @IsEmail(
+    {},
+    {
+      message: 'El email ingresado no es válido.',
+    }
+  )
   email: string;
 
   @ApiProperty({
-    example: 'Abc123',
+    example: 'Fastery2025.',
     description: 'The password of the user.',
     nullable: false,
   })

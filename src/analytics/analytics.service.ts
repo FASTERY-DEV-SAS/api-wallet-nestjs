@@ -53,7 +53,6 @@ export class AnalyticsService {
     const averageIncomePercentage = totalIncome / totalDays / 10000;
 
     return {
-      statusCode: HttpStatus.OK,
       message: 'Chart transfers',
       data: chartData,
       averageExpensePercentage: averageExpensePercentage.toFixed(2),

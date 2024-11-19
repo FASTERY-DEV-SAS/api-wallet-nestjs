@@ -24,14 +24,13 @@ export class WalletsService {
 
     @InjectRepository(Transfer)
     private readonly transferRepository: Repository<Transfer>,
-  ) {}
+  ) { }
 
   // USER++
   async createWallet(
     createWalletDto: CreateWalletDto,
     user: User,
   ): Promise<{
-    statusCode: HttpStatus;
     message: string;
     walletId: string;
   }> {
@@ -48,7 +47,6 @@ export class WalletsService {
       await Promise.all([saveOperation]);
 
       return {
-        statusCode: HttpStatus.CREATED,
         message: 'Billetera creada con éxito',
         walletId: newwallet.id,
       };
@@ -68,7 +66,6 @@ export class WalletsService {
     id: string,
     updateWalletDto: UpdateWalletDto,
   ): Promise<{
-    statusCode: HttpStatus;
     message: string;
     walletId: string;
   }> {
@@ -76,7 +73,6 @@ export class WalletsService {
       const updateOperation = this.walletRepository.update(id, updateWalletDto);
       await Promise.all([updateOperation]);
       return {
-        statusCode: HttpStatus.OK,
         message: 'Billetera actualizada con éxito',
         walletId: id,
       };
@@ -97,7 +93,6 @@ export class WalletsService {
     user: User,
   ): Promise<{
     wallet: Wallet;
-    statusCode: HttpStatus;
     message: string;
   }> {
     try {
@@ -105,7 +100,6 @@ export class WalletsService {
         where: { id: walletId, user: { id: user.id } },
       });
       return {
-        statusCode: HttpStatus.OK,
         wallet,
         message: 'Billetera del usuario',
       };
@@ -116,14 +110,13 @@ export class WalletsService {
       } else {
         throw new InternalServerErrorException(
           error.message ||
-            'Ocurrió un error al obtener la billetera del usuario',
+          'Ocurrió un error al obtener la billetera del usuario',
         );
       }
     }
   }
   // USER++
   async getWallets(user: User): Promise<{
-    statusCode: HttpStatus;
     message: string;
     wallets: Wallet[];
   }> {
@@ -136,8 +129,7 @@ export class WalletsService {
       });
       return {
         wallets,
-        statusCode: HttpStatus.OK,
-        message: 'Billeteras del usuario',
+        message: 'Billeteras del usuario'
       };
     } catch (error) {
       this.logger.error(`Error in getWallets`);
@@ -147,14 +139,13 @@ export class WalletsService {
       } else {
         throw new InternalServerErrorException(
           error.message ||
-            'Ocurrió un error al obtener las billeteras del usuario',
+          'Ocurrió un error al obtener las billeteras del usuario',
         );
       }
     }
   }
   // USER++
   async getTotalBalanceOfWallets(user: User): Promise<{
-    statusCode: HttpStatus;
     total: number;
     message: string;
   }> {
@@ -169,7 +160,6 @@ export class WalletsService {
         overallBalance += wallet.balance;
       });
       return {
-        statusCode: HttpStatus.OK,
         total: overallBalance,
         message: 'Balance general de las billeteras',
       };
@@ -181,14 +171,13 @@ export class WalletsService {
       } else {
         throw new InternalServerErrorException(
           error.message ||
-            'Ocurrió un error al obtener el balance general de las billeteras',
+          'Ocurrió un error al obtener el balance general de las billeteras',
         );
       }
     }
   }
   // ADMIN+
   async updateWalletBalance(walletId: string): Promise<{
-    statusCode: HttpStatus;
     message: string;
     walletId: string;
   }> {
@@ -227,7 +216,6 @@ export class WalletsService {
       await this.walletRepository.save(wallet);
 
       return {
-        statusCode: HttpStatus.OK,
         message: 'Balance actualizado con éxito',
         walletId,
       };
@@ -280,7 +268,6 @@ export class WalletsService {
       const balanceMatches = balanceWallet === balanceTransaction;
 
       return {
-        statusCode: HttpStatus.OK,
         message: balanceMatches ? 'Total SI coincide' : 'Total NO coincide',
         status: balanceMatches,
         balance: balanceWallet,

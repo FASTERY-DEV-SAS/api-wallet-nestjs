@@ -26,7 +26,7 @@ export class AuthService {
   // USER++
   async register(
     createUserDto: CreateUserDto,
-  ): Promise<{ statusCode: number; message: string }> {
+  ): Promise<{ message: string }> {
     try {
       const { password, ...userData } = createUserDto;
       const user = this.userRepository.create({
@@ -36,8 +36,7 @@ export class AuthService {
       await this.userRepository.save(user);
       delete user.password;
       return {
-        message: 'Usuario registrado con éxito.',
-        statusCode: HttpStatus.CREATED,
+        message: 'Usuario registrado con éxito.'
       };
     } catch (error) {
       this.logger.error(`Error in register ${createUserDto.userName}`);
@@ -100,7 +99,6 @@ export class AuthService {
   }
   // CERRAR SESIÓN
   // REFRESCAR TOKEN
-
   async checkAuthStatus(user: User) {
     return {
       ...user,
