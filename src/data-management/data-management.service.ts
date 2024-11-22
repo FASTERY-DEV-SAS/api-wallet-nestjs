@@ -63,6 +63,7 @@ export class DataManagementService {
       const response = await firstValueFrom(
         this.httpService.get(apiUrl, { headers }),
       );
+      this.logger.log(`RESPONDE DE LA CEDULA ${cedula}`, response.data);
 
       const apiData = response.data?.data;
 
