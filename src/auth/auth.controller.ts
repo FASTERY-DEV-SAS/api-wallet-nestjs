@@ -43,4 +43,10 @@ export class AuthController {
   checkAuthStatus(@GetUser() user: User) {
     return this.authService.checkAuthStatus(user);
   }
+
+  @Post('createApiKeyId')
+  @Auth(ValidRoles.admin,ValidRoles.user)
+  async createApiKeyId(@Body() data: any,@GetUser() user: User){
+    return this.authService.createApiKeyId(data,user);
+  }
 }

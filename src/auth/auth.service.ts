@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { ApiKey } from './entities/apikey.entity';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(ApiKey)
+    private readonly apikeyRepository: Repository<ApiKey>,
     private readonly jwtService: JwtService,
   ) { }
   // USER++
@@ -109,5 +112,25 @@ export class AuthService {
   private getJwtToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;
+  }
+
+  async createApiKeyId(data: any, user: User) {
+    try {
+      const apiKey = this.apikeyRepository.create({
+        key: "FASTERY2025",
+        user: user,
+      });
+      await this.apikeyRepository.save(apiKey);
+
+      return {
+        message: 'ApiKey actualizada con éxito',
+        data: data
+      };
+    } catch (error) {
+      this.logger.error(`Error in editApiKeyId ${data.id}`, error);
+      throw new InternalServerErrorException(
+        error.message || 'Ocurrió un error al editar la ApiKey.',
+      );
+    }
   }
 }

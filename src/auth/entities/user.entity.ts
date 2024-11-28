@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiKey } from './apikey.entity';
 
 @Entity('users')
 export class User {
@@ -33,6 +34,9 @@ export class User {
 
   @Column('text', { array: true, default: ['user'] })
   roles: string[];
+
+  @OneToMany(() => ApiKey, (apiKey) => apiKey.user, {nullable: true})
+  apiKeys: ApiKey[];
 
   @CreateDateColumn({})
   createAt: Date;
