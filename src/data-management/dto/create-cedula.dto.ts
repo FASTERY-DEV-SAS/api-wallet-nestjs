@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsDate, IsUUID, Length } from 'class-validator';
+import { IsString, IsOptional, IsDate, IsUUID, Length, IsEmail, IsIP } from 'class-validator';
 
 export class CreateCedulaDto {
   @IsString()
@@ -11,10 +11,20 @@ export class CreateCedulaDto {
   @IsString()
   nombres: string;
 
+  @IsEmail()
+  email: string;
+
+  @IsIP()
+  @IsOptional()
+  ip?: string;
+
+  @IsString()
+  convenio: string;
+
   @IsString()
   apellidos: string;
 
   @IsOptional()
   @IsString()
-  fechaDefuncion?: any;
+  fechaDefuncion?: string;
 }

@@ -18,8 +18,11 @@ export class Cedula {
     @Column()
     apellidos: string;
 
-    @Column({ nullable: true })
+    @Column({ default: "no-email" , nullable: true })
     email: string;
+
+    @Column()
+    convenio: string;
 
     @Column({ nullable: true })
     fechaDefuncion: Date;

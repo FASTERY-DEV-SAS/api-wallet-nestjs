@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 export interface Establishment {
     nombreFantasiaComercial: string;
     tipoEstablecimiento: string;
@@ -8,8 +8,8 @@ export interface Establishment {
 }
 export interface InformacionFechasContribuyente {
     fechaInicioActividades: string;
-    fechaCese: string;
-    fechaReinicioActividades: string;
+    fechaCese: any;
+    fechaReinicioActividades: any;
     fechaActualizacion: string;
 }
 @Entity({ name: 'ruc' })
@@ -18,62 +18,60 @@ export class Ruc {
     id: string;
 
     @Column()
-    contribuyenteFantasma: string;
-
-    @Column()
-    numeroRucFantasma: string;
-
-    @Column()
     numeroRuc: string;
+
+    @Column({ default: "no-email" , nullable: true })
+    email: string;
 
     @Column()
     razonSocial: string;
 
     @Column()
-    nombreComercial: string;
+    estadoContribuyenteRuc: string;
 
     @Column()
-    estadoPersonaNatural: string;
+    actividadEconomicaPrincipal: string;
 
     @Column()
-    estadoSociedad: string;
+    tipoContribuyente: string;
+
+    @Column({ nullable: true })
+    regimen: string;
+
+    @Column({ nullable: true })
+    categoria: string;
 
     @Column()
-    claseContribuyente: string;
+    obligadoLlevarContabilidad: string;
 
     @Column()
-    obligado: string;
+    agenteRetencion: string;
 
     @Column()
-    actividadContribuyente: string;
+    contribuyenteEspecial: string;
 
     @Column({ type: 'json', nullable: true })
     informacionFechasContribuyente: InformacionFechasContribuyente;
 
-    @Column()
-    representanteLegal: string;
+    @Column({ type: 'json', nullable: true })
+    representantesLegales: { identificacion: string; nombre: string }[];
+
+    @Column({ nullable: true })
+    motivoCancelacionSuspension: string;
 
     @Column()
-    agenteRepresentante: string;
+    contribuyenteFantasma: string;
 
     @Column()
-    personaSociedad: string;
-
-    @Column()
-    subtipoContribuyente: string;
-
-    @Column()
-    motivoCancelacion: string;
-
-    @Column()
-    motivoSuspension: string;
+    transaccionesInexistente: string;
 
     @Column({ type: 'json', nullable: true })
-    establishments: Establishment[];
+    establecimientos: Establishment[];
 
-    @Column()
+    @CreateDateColumn()
     createdAt: Date;
 
-    @Column()
+    @UpdateDateColumn()
     updatedAt: Date;
 }
+
