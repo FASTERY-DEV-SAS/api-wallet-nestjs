@@ -9,6 +9,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { envs } from './config';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { DataManagementModule } from './data-management/data-management.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { DataManagementModule } from './data-management/data-management.module';
     CategoriesModule,
     AnalyticsModule,
     DataManagementModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],
