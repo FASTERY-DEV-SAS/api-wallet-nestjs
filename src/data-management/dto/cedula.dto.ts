@@ -9,6 +9,7 @@ export class CedulaDto {
   @IsIn(['0993392477001', '0940991383', '0993376696001'], { message: 'El convenio no es válido.' })
   convenio: string;
 
+  @IsEmail()
   @IsOptional()
   email: string;
 }

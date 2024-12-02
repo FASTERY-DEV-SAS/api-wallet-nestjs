@@ -10,5 +10,6 @@ export class RucDto {
   convenio: string;
 
   @IsEmail()
+  @IsOptional()
   email: string;
 }
