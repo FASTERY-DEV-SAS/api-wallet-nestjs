@@ -31,9 +31,9 @@ export class DataManagementService {
       throw new BadRequestException('La cédula debe tener exactamente 10 caracteres.');
     }
 
-    if (!this.esCedulaValida(cedulaDto.identificacion)) {
-      throw new BadRequestException('La cédula no es válida.');
-    }
+    // if (!this.esCedulaValida(cedulaDto.identificacion)) {
+    //   throw new BadRequestException('La cédula no es válida.');
+    // }
 
     try {
       const existingCedula = await this.cedulaRepository.findOne({
